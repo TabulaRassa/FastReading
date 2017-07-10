@@ -27,6 +27,7 @@ object Form1: TForm1
       Caption = 'Файл'
       object MenuFileDir: TMenuItem
         Caption = 'Дирректория файлов'
+        OnClick = MenuFileDirClick
       end
       object MenuOpen: TMenuItem
         Caption = 'Открыть'
@@ -43,44 +44,59 @@ object Form1: TForm1
     object MenuItem7: TMenuItem
       Caption = 'Режимы'
       object MenuShulte: TMenuItem
-        Caption = 'Таблицы Шульте'
+        Caption = 'Шульте'
         RadioItem = True
-        OnClick = MenuShulteClick
+        OnClick = MenuModeClick
+      end
+      object MenuKlin: TMenuItem
+        Caption = 'Клиновидные'
+        RadioItem = True
+        OnClick = MenuModeClick
+      end
+      object MenuBigSmall: TMenuItem
+        Caption = 'Большие-малые'
+        RadioItem = True
+        OnClick = MenuModeClick
+      end
+      object MenuBlackWhite: TMenuItem
+        Caption = 'Чёрные и белые'
+        RadioItem = True
+        OnClick = MenuModeClick
       end
       object MenuHorizDrum: TMenuItem
         Caption = 'Горизонтальные стучалки'
         RadioItem = True
-        OnClick = MenuHorizDrumClick
-      end
-      object MenuZaya: TMenuItem
-        Caption = 'Зайцы'
-        RadioItem = True
-        OnClick = MenuZayaClick
-      end
-      object MenuKenga: TMenuItem
-        Caption = 'Кенгуру'
-        RadioItem = True
-        OnClick = MenuKengaClick
+        OnClick = MenuModeClick
       end
       object MenuCountdown: TMenuItem
         Caption = 'Обратный счёт'
         RadioItem = True
-        OnClick = MenuCountdownClick
+        OnClick = MenuModeClick
+      end
+      object MenuZaya: TMenuItem
+        Caption = 'Зайцы'
+        RadioItem = True
+        OnClick = MenuModeClick
+      end
+      object MenuKenga: TMenuItem
+        Caption = 'Кенгуру'
+        RadioItem = True
+        OnClick = MenuModeClick
       end
       object MenuElephant: TMenuItem
         Caption = 'Слонотоп'
         RadioItem = True
-        OnClick = MenuElephantClick
+        OnClick = MenuModeClick
       end
       object MenuScaner: TMenuItem
         Caption = 'Сканер'
         RadioItem = True
-        OnClick = MenuScanerClick
+        OnClick = MenuModeClick
       end
       object MenuRainbow: TMenuItem
         Caption = 'Алфавит-радуга'
         RadioItem = True
-        OnClick = MenuRainbowClick
+        OnClick = MenuOpenClick
       end
     end
     object MenuItem2: TMenuItem
@@ -95,5 +111,9 @@ object Form1: TForm1
     Filter = '*.txt|*.txt'
     left = 119
     top = 104
+  end
+  object SelectDirectoryDialog1: TSelectDirectoryDialog
+    left = 271
+    top = 39
   end
 end

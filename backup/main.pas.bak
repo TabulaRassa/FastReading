@@ -16,6 +16,9 @@ type
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
     MenuFileDir: TMenuItem;
+    MenuKlin: TMenuItem;
+    MenuBigSmall: TMenuItem;
+    MenuBlackWhite: TMenuItem;
     MenuKenga: TMenuItem;
     MenuCountdown: TMenuItem;
     MenuElephant: TMenuItem;
@@ -32,24 +35,35 @@ type
     MenuZaya: TMenuItem;
     OpenDialog1: TOpenDialog;
     Panel1: TPanel;
-    procedure MenuCountdownClick(Sender: TObject);
-    procedure MenuElephantClick(Sender: TObject);
-    procedure MenuHorizDrumClick(Sender: TObject);
-    procedure MenuKengaClick(Sender: TObject);
+    SelectDirectoryDialog1: TSelectDirectoryDialog;
+    procedure MenuFileDirClick(Sender: TObject);
+    procedure MenuModeClick(Sender: TObject);
     procedure MenuOpenClick(Sender: TObject);
     procedure MenuCloseClick(Sender: TObject);
-    procedure MenuRainbowClick(Sender: TObject);
-    procedure MenuScanerClick(Sender: TObject);
-    procedure MenuShulteClick(Sender: TObject);
-    procedure MenuZayaClick(Sender: TObject);
   private
     { private declarations }
+    procedure initBigSmall;
+    procedure initDrum;
+    procedure initCountDown;
+    procedure initKlin;
+    procedure initBlackWhite;
+    procedure initShulte;
+    procedure initElephant;
+    procedure initKenga;
+    procedure initZaya;
+    procedure initScaner;
+    procedure initRainbow;
+
+    procedure drowCell(x, y, i: integer);
+
   public
     { public declarations }
   end;
 
 var
   Form1: TForm1;
+  step: integer = 50;
+  n: integer = 25;
 
 implementation
 
@@ -66,24 +80,12 @@ begin
   OpenDialog1.Free;
 end;
 
-procedure TForm1.MenuHorizDrumClick(Sender: TObject);
+procedure TForm1.MenuFileDirClick(Sender: TObject);
 begin
-  Self.MenuHorizDrum.Checked:=not Self.MenuHorizDrum.Checked;
-end;
-
-procedure TForm1.MenuCountdownClick(Sender: TObject);
-begin
-  MenuCountdown.Checked:=not MenuCountdown.Checked;
-end;
-
-procedure TForm1.MenuElephantClick(Sender: TObject);
-begin
-  MenuElephant.Checked:=not MenuElephant.Checked;
-end;
-
-procedure TForm1.MenuKengaClick(Sender: TObject);
-begin
-  MenuKenga.Checked:=not MenuKenga.Checked;
+  if SelectDirectoryDialog1.Execute then
+  begin
+     OpenDialog1.InitialDir:=SelectDirectoryDialog1.FileName;
+  end;
 end;
 
 procedure TForm1.MenuCloseClick(Sender: TObject);
@@ -91,27 +93,118 @@ begin
   Close;
 end;
 
-procedure TForm1.MenuRainbowClick(Sender: TObject);
+procedure TForm1.MenuModeClick(Sender: TObject);
 begin
-  MenuRainbow.Checked:=not MenuRainbow.Checked;
+  TMenuItem (Sender).Checked:=true;
+  case TMenuItem (Sender).Name of
+    'MenuHorizDrum': initDrum;
+    'MenuCountdown': initCountdown;
+    'MenuBigSmall': initBigSmall;
+    'MenuBlackWhite': initBlackWhite;
+    'MenuElephant': initElephant;
+    'MenuKenga': initKenga;
+    'MenuKlin': initKlin;
+    'MenuRainbow': initRainbow;
+    'MenuScaner': initScaner;
+    'MenuShulte': initShulte;
+    'MenuZaya': initZaya;
+  end;
+
 end;
 
-procedure TForm1.MenuScanerClick(Sender: TObject);
+procedure TForm1.initBigSmall;
 begin
-  MenuScaner.Checked:=not MenuScaner.Checked;
+
 end;
 
-procedure TForm1.MenuShulteClick(Sender: TObject);
+procedure TForm1.initBlackWhite;
 begin
-  Self.MenuShulte.Checked:=not Self.MenuShulte.Checked;
+
 end;
 
-procedure TForm1.MenuZayaClick(Sender: TObject);
+procedure TForm1.initCountDown;
 begin
-  MenuZaya.Checked:=not MenuZaya.Checked;
+
 end;
 
+procedure TForm1.initDrum;
+begin
 
+end;
+
+procedure TForm1.initElephant;
+begin
+
+end;
+
+procedure TForm1.initKlin;
+begin
+
+end;
+
+procedure TForm1.initZaya;
+begin
+
+end;
+
+procedure TForm1.initKenga;
+begin
+
+end;
+
+procedure TForm1.initRainbow;
+begin
+
+end;
+
+procedure TForm1.initScaner;
+begin
+
+end;
+
+procedure TForm1.initShulte;
+
+var
+  sh, t_sh: array [1..25] of integer;
+  i, j, ri, c : integer;
+begin
+  Randomize;
+  for i:=1 to n do
+    t_sh[i]:=i;
+  c:=n;
+
+  for i:=1 to n do
+    begin
+      ri:=random(c)+1;
+      sh[i]:=t_sh[ri];
+      for j:=ri to c-1 do
+        t_sh[j]:=t_sh[j+1];
+      c:=c-1;
+		end;
+
+  ri:=1;
+  for i:=1 to 5 do
+    for j:=1 to 5 do
+      begin
+        drowCell(step*i, step*j, sh[ri]);
+        inc(ri);
+		  end;
+end;
+
+procedure TForm1.drowCell(x, y, i: integer);
+begin
+  Form1.Canvas.Pen.Width:=2;
+  Form1.Canvas.Pen.Color:=clBlack;
+  Form1.Canvas.Pen.Style:=psSolid;
+
+  Form1.Canvas.Font.Name:='Tahoma';
+  Form1.Canvas.Font.Size:=14;
+
+  Form1.Canvas.Rectangle(x, y, x + 2*step + Form1.Canvas.Pen.Width, y + 2*step + Form1.Canvas.Pen.Width);
+  Form1.Canvas.TextOut(x+step-Form1.Canvas.TextWidth(IntToStr(i)) div 2, y+step-Form1.Canvas.TextHeight(IntToStr(i)) div 2 , IntToStr(i));
+
+end;
 
 end.
+
 
