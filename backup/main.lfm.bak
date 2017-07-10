@@ -1,0 +1,99 @@
+object Form1: TForm1
+  Left = 335
+  Height = 642
+  Top = 117
+  Width = 1055
+  Caption = 'Скорочтение'
+  ClientHeight = 623
+  ClientWidth = 1055
+  Color = clWhite
+  Menu = MainMenu1
+  LCLVersion = '1.6.2.0'
+  object Panel1: TPanel
+    Left = 0
+    Height = 50
+    Top = 573
+    Width = 1055
+    Align = alBottom
+    BevelInner = bvRaised
+    Color = clSilver
+    ParentColor = False
+    TabOrder = 0
+  end
+  object MainMenu1: TMainMenu
+    left = 76
+    top = 9
+    object MenuItem1: TMenuItem
+      Caption = 'Файл'
+      object MenuFileDir: TMenuItem
+        Caption = 'Дирректория файлов'
+      end
+      object MenuOpen: TMenuItem
+        Caption = 'Открыть'
+        OnClick = MenuOpenClick
+      end
+      object MenuItem5: TMenuItem
+        Caption = '-'
+      end
+      object MenuClose: TMenuItem
+        Caption = 'Выход'
+        OnClick = MenuCloseClick
+      end
+    end
+    object MenuItem7: TMenuItem
+      Caption = 'Режимы'
+      object MenuShulte: TMenuItem
+        Caption = 'Таблицы Шульте'
+        RadioItem = True
+        OnClick = MenuShulteClick
+      end
+      object MenuHorizDrum: TMenuItem
+        Caption = 'Горизонтальные стучалки'
+        RadioItem = True
+        OnClick = MenuHorizDrumClick
+      end
+      object MenuZaya: TMenuItem
+        Caption = 'Зайцы'
+        RadioItem = True
+        OnClick = MenuZayaClick
+      end
+      object MenuKenga: TMenuItem
+        Caption = 'Кенгуру'
+        RadioItem = True
+        OnClick = MenuKengaClick
+      end
+      object MenuCountdown: TMenuItem
+        Caption = 'Обратный счёт'
+        RadioItem = True
+        OnClick = MenuCountdownClick
+      end
+      object MenuElephant: TMenuItem
+        Caption = 'Слонотоп'
+        RadioItem = True
+        OnClick = MenuElephantClick
+      end
+      object MenuScaner: TMenuItem
+        Caption = 'Сканер'
+        RadioItem = True
+        OnClick = MenuScanerClick
+      end
+      object MenuRainbow: TMenuItem
+        Caption = 'Алфавит-радуга'
+        RadioItem = True
+        OnClick = MenuRainbowClick
+      end
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'Настройки'
+    end
+    object MenuItem3: TMenuItem
+      Caption = 'Справка'
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    DefaultExt = '.txt'
+    Filter = '*.txt|*.txt'
+    left = 119
+    top = 104
+  end
+end
