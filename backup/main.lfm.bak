@@ -8,6 +8,8 @@ object Form1: TForm1
   ClientWidth = 1055
   Color = clWhite
   Menu = MainMenu1
+  OnCreate = FormCreate
+  OnPaint = FormPaint
   LCLVersion = '1.6.2.0'
   object Panel1: TPanel
     Left = 0
@@ -15,7 +17,6 @@ object Form1: TForm1
     Top = 573
     Width = 1055
     Align = alBottom
-    BevelInner = bvRaised
     Color = clSilver
     ParentColor = False
     TabOrder = 0
@@ -115,5 +116,11 @@ object Form1: TForm1
   object SelectDirectoryDialog1: TSelectDirectoryDialog
     left = 271
     top = 39
+  end
+  object Timer1: TTimer
+    Enabled = False
+    OnTimer = Timer1Timer
+    left = 301
+    top = 223
   end
 end

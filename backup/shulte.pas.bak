@@ -1,0 +1,155 @@
+unit Shulte;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+      Classes, StdCtrls, ExtCtrls, Controls, Graphics, SysUtils;
+
+  procedure RadioClick(Sender: TObject);
+  procedure initShulte;
+  procedure createShulte(need_recalc: boolean);
+
+implementation
+
+uses main;
+
+procedure RadioClick(Sender: TObject);
+begin
+  Form1.Canvas.Clear;
+  createShulte(true);
+  if Form1.Timer1.Enabled then
+    begin
+       Form1.Timer1.Enabled:=false;
+       sec:=0;
+       milisec:=0;
+       Form1.Panel1.Controls[3].Caption:='0';
+		end
+end;
+
+procedure initShulte;
+
+var
+  Radio:TRadioGroup;
+  ButtonSH, ButtonST :TButton;
+  TimeStr: TLabel;
+begin
+  Form1.clearPanel;
+
+  with Form1.Panel1 do
+  begin
+    Left := 0;
+    Height := 80;
+    Top := 573;
+    Width := 1055;
+    Align := alBottom;
+    BevelInner := bvRaised;
+    Color := clSilver;
+    ParentColor := False;
+    TabOrder := 0;
+	end;
+  Radio:=TRadioGroup.Create(Form1.Panel1);
+
+  with Radio do
+  begin
+    Parent:=Form1.Panel1;
+    Items.Add('3');
+    Items.Add('5');
+    Items.Add('7');
+    AutoSize:=true;
+    ItemIndex:=1;
+    Columns:=3;
+    Caption:='Размер';
+    Left:=20;
+    Top:=15;
+	end;
+  Radio.OnClick:=RadioClick(Radio);
+
+  ButtonSH:=Tbutton.Create(Form1.Panel1);
+  with ButtonSH do
+  begin
+    Parent:=Form1.Panel1;
+    Caption:='Перемешать';
+    left:=150;
+    top:=25;
+    Color := clSilver;
+    ParentColor := False;
+    OnClick:=@RadioClick;
+	end;
+
+  ButtonST:=Tbutton.Create(Form1.Panel1);
+  with ButtonST do
+  begin
+    Parent:=Panel1;
+    Caption:='Время';
+    left:=250;
+    top:=25;
+    Color := clSilver;
+    ParentColor := False;
+    OnClick:=@Form1.TimerClick;
+	end;
+
+  TimeStr:=TLabel.Create(Form1.Panel1);
+  with TimeStr do
+  begin
+    Parent:=Panel1;
+    Left:=350;
+    top:=25;
+    Width:=30;
+    Font.Size:=14;
+    Caption:='0';
+	end;
+
+  createShulte(true);
+end;
+
+procedure createShulte(need_recalc: boolean);
+var
+  i, j, ri, c,
+    sh_x, sh_y, screen_w, screen_h : integer;
+begin
+  Canvas.Clear;
+  if need_recalc  then
+  begin
+    n:=StrToInt((Form1.Panel1.Controls[0] as TRadioGroup).Items[(Panel1.Controls[0] as TRadioGroup).ItemIndex]);
+    Randomize;
+    c:=n*n;
+    for i:=1 to c do
+      t_sh[i]:=i;
+
+    for i:=1 to c do
+    begin
+      ri:=random(c)+1;
+      sh[i]:=t_sh[ri];
+      for j:=ri to c-1 do
+        t_sh[j]:=t_sh[j+1];
+      c:=c-1;
+    end;
+  end;
+
+  ri:=1;
+  screen_w := Canvas.Width div (n + 2);
+  screen_h := (Canvas.Height - Panel1.Height) div (n + 2);
+  if screen_w > screen_h then
+    step := screen_h
+  else
+    step := screen_w;
+
+  sh_x := (Canvas.Width div 2) - step * (n div 2) - step div 2;
+
+  for i:=1 to n do
+  begin
+    sh_y := ((Canvas.Height - Panel1.Height) div 2) - step * (n div 2) - step div 2;
+    for j:=1 to n do
+      begin
+        drowCell(sh_x, sh_y, sh[ri]);
+        inc(ri);
+        sh_y := sh_y + step;
+		  end;
+      sh_x := sh_x + step;
+	end;
+end;
+
+end.
+
