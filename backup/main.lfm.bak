@@ -1,21 +1,22 @@
 object Form1: TForm1
   Left = 335
   Height = 642
-  Top = 117
-  Width = 1055
+  Top = 0
+  Width = 0
   Caption = 'Скорочтение'
-  ClientHeight = 623
-  ClientWidth = 1055
+  ClientHeight = 642
+  ClientWidth = 0
   Color = clWhite
   Menu = MainMenu1
   OnCreate = FormCreate
   OnPaint = FormPaint
   LCLVersion = '1.6.2.0'
+  WindowState = wsFullScreen
   object Panel1: TPanel
     Left = 0
-    Height = 50
-    Top = 573
-    Width = 1055
+    Height = 80
+    Top = 562
+    Width = 0
     Align = alBottom
     Color = clSilver
     ParentColor = False

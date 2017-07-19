@@ -48,7 +48,7 @@ type
   private
     { private declarations }
 
-    procedure RadioClick(Sender: TObject);
+    procedure Shuffle(Sender: TObject);
     procedure initShulte;
     procedure createShulte(need_recalc: boolean);
     procedure initBigSmall;
@@ -56,6 +56,7 @@ type
     procedure initCountDown;
     procedure initKlin;
     procedure initBlackWhite;
+    procedure createBlackAndWhite(need_recalc: boolean);
     procedure initElephant;
     procedure initKenga;
     procedure initZaya;
@@ -77,7 +78,8 @@ var
   n: integer;
   sec, milisec: integer;
 
-  sh, t_sh: array [1..49] of integer;
+  sh, t_sh: array [1..64] of integer;
+  mode : string;
 
 implementation
 
@@ -125,7 +127,7 @@ begin
     'MenuHorizDrum': initDrum;
     'MenuCountdown': initCountdown;
     'MenuBigSmall': initBigSmall;
-    'MenuBlackWhite': initBlackWhite;
+    'MenuBlackWhite': createBlackAndWhite(false);
     'MenuElephant': initElephant;
     'MenuKenga': initKenga;
     'MenuKlin': initKlin;
@@ -145,7 +147,10 @@ procedure TForm1.Timer1Timer(Sender: TObject);
 
 begin
   inc(sec);
-  Panel1.Controls[3].Caption:=IntToStr(sec); // + ':' + IntToStr(milisec);
+  case mode of
+    'shulte' : Panel1.Controls[3].Caption:=IntToStr(sec); // + ':' + IntToStr(milisec);
+    'black&white' : Panel1.Controls[2].Caption:=IntToStr(sec); // + ':' + IntToStr(milisec);
+	end;
 end;
 
 procedure TForm1.TimerClick(Sender: TObject);
@@ -158,7 +163,10 @@ begin
 		end
   else
   begin
-    Panel1.Controls[3].Caption:='0';
+    case mode of
+      'shulte' : Form1.Panel1.Controls[3].Caption:='0';
+      'black&white' : Form1.Panel1.Controls[2].Caption:='0';
+  	end;
     Timer1.Enabled:=true;
 	end;
 
@@ -204,16 +212,22 @@ begin
 		end;
 end;
 
-procedure TForm1.RadioClick(Sender: TObject);
+procedure TForm1.Shuffle(Sender: TObject);
 begin
   Form1.Canvas.Clear;
-  createShulte(true);
+  case mode of
+  'black&white' : createBlackAndWhite(true);
+  'shulte' : createShulte(true);
+  end;
   if Form1.Timer1.Enabled then
     begin
        Form1.Timer1.Enabled:=false;
        sec:=0;
        milisec:=0;
-       Form1.Panel1.Controls[3].Caption:='0';
+       case mode of
+        'shulte' : Form1.Panel1.Controls[3].Caption:='0';
+        'black&white' : Form1.Panel1.Controls[2].Caption:='0';
+			 end;
 		end
 end;
 
@@ -223,6 +237,7 @@ var
     sh_x, sh_y, screen_w, screen_h : integer;
 begin
   Canvas.Clear;
+  mode := 'shulte';
   if need_recalc  then
   begin
     n:=StrToInt((Form1.Panel1.Controls[0] as TRadioGroup).Items[(Panel1.Controls[0] as TRadioGroup).ItemIndex]);
@@ -300,7 +315,7 @@ begin
     Left:=20;
     Top:=15;
 	end;
-  Radio.OnClick:=@RadioClick;
+  Radio.OnClick:=@Shuffle;
 
   ButtonSH:=Tbutton.Create(Panel1);
   with ButtonSH do
@@ -311,7 +326,7 @@ begin
     top:=25;
     Color := clSilver;
     ParentColor := False;
-    OnClick:=@RadioClick;
+    OnClick:=@Shuffle;
 	end;
 
   ButtonST:=Tbutton.Create(Panel1);
@@ -342,15 +357,38 @@ end;
 
 procedure TForm1.drowCell(x, y, i: integer);
 begin
+
   Form1.Canvas.Pen.Width:=2;
   Form1.Canvas.Pen.Color:=clBlack;
   Form1.Canvas.Pen.Style:=psSolid;
-
   Form1.Canvas.Font.Name:='Tahoma';
   Form1.Canvas.Font.Size:=14;
 
   Form1.Canvas.Rectangle(x, y, x + step + Canvas.Pen.Width, y + step + Canvas.Pen.Width);
-  Form1.Canvas.TextOut(x+step div 2 -Canvas.TextWidth(IntToStr(i)) div 2, y+step div 2-Canvas.TextHeight(IntToStr(i)) div 2 , IntToStr(i));
+  if mode = 'shulte' then
+  begin
+    Form1.Canvas.Font.Color:=clBlack;
+    Form1.Canvas.TextOut(x + step div 2 - Canvas.TextWidth(IntToStr(i)) div 2,
+                         y + step div 2 - Canvas.TextHeight(IntToStr(i)) div 2 , IntToStr(i));
+  end
+  else
+  begin
+    if i <> 0 then
+    begin
+      if i > 25 then
+      begin
+        Form1.Canvas.Font.Color:=clBlack;
+        Form1.Canvas.TextOut(x + step div 2 - Canvas.TextWidth(IntToStr(i)) div 2,
+                             y + step div 2 - Canvas.TextHeight(IntToStr(i)) div 2 , IntToStr(i - 25))
+      end
+      else
+      begin
+        Form1.Canvas.Font.Color:=clGray;
+        Form1.Canvas.TextOut(x + step div 2 - Canvas.TextWidth(IntToStr(i)) div 2,
+                             y + step div 2 - Canvas.TextHeight(IntToStr(i)) div 2 , IntToStr(i))
+      end;
+    end;
+  end;
 
 end;
 
@@ -360,8 +398,97 @@ begin
 end;
 
 procedure TForm1.initBlackWhite;
+var
+  ButtonBW, ButtonST :TButton;
+  TimeStr: TLabel;
 begin
   clearPanel;
+
+  ButtonBW:=Tbutton.Create(Panel1);
+  with ButtonBW do
+  begin
+    Parent:=Panel1;
+    Caption:='Перемешать';
+    left:=150;
+    top:=25;
+    Color := clSilver;
+    ParentColor := False;
+    OnClick:=@Shuffle;
+	end;
+
+  ButtonST:=Tbutton.Create(Panel1);
+  with ButtonST do
+  begin
+    Parent:=Panel1;
+    Caption:='Время';
+    left:=250;
+    top:=25;
+    Color := clSilver;
+    ParentColor := False;
+    OnClick:=@Form1.TimerClick;
+	end;
+
+  TimeStr:=TLabel.Create(Panel1);
+  with TimeStr do
+  begin
+    Parent:=Panel1;
+    Left:=350;
+    top:=25;
+    Width:=30;
+    Font.Size:=14;
+    Caption:='0';
+	end;
+
+  createBlackAndWhite(true);
+end;
+
+procedure Tform1.createBlackAndWhite(need_recalc: boolean);
+var
+  i, j, ri, c,
+    sh_x, sh_y, screen_w, screen_h : integer;
+begin
+  Canvas.Clear;
+  mode := 'black&white';
+  if need_recalc  then
+  begin
+    n:=8;
+    Randomize;
+    c:=n*n;
+    for i:=1 to 50 do
+      t_sh[i]:=i;
+
+    for i:=1 to c do
+    begin
+      ri:=random(c)+1;
+      sh[i]:=t_sh[ri];
+      for j:=ri to c-1 do
+        t_sh[j]:=t_sh[j+1];
+      c:=c-1;
+    end;
+  end;
+
+  ri:=1;
+  screen_w := Canvas.Width div (n + 2);
+  screen_h := (Canvas.Height - Panel1.Height) div (n + 2);
+  if screen_w > screen_h then
+    step := screen_h
+  else
+    step := screen_w;
+
+  sh_x := (Canvas.Width div 2) - step * (n div 2);
+
+  for i:=1 to n do
+  begin
+    sh_y := ((Canvas.Height - Panel1.Height) div 2) - step * (n div 2);
+    for j:=1 to n do
+      begin
+        drowCell(sh_x, sh_y, sh[ri]);
+        inc(ri);
+        sh_y := sh_y + step;
+      end;
+      sh_x := sh_x + step;
+  end;
+
 end;
 
 procedure TForm1.initCountDown;
