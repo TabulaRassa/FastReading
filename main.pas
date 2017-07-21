@@ -51,12 +51,13 @@ type
     procedure Shuffle(Sender: TObject);
     procedure initShulte;
     procedure createShulte(need_recalc: boolean);
+    procedure initBlackWhite;
+    procedure createBlackAndWhite(need_recalc: boolean);
+    procedure initKlin;
+    procedure createKlin(need_recalc: boolean);
     procedure initBigSmall;
     procedure initDrum;
     procedure initCountDown;
-    procedure initKlin;
-    procedure initBlackWhite;
-    procedure createBlackAndWhite(need_recalc: boolean);
     procedure initElephant;
     procedure initKenga;
     procedure initZaya;
@@ -103,8 +104,6 @@ begin
      OpenDialog1.InitialDir:=SelectDirectoryDialog1.FileName;
   end;
 end;
-
-
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
@@ -231,54 +230,6 @@ begin
 		end
 end;
 
-procedure TForm1.createShulte(need_recalc: boolean);
-var
-  i, j, ri, c,
-    sh_x, sh_y, screen_w, screen_h : integer;
-begin
-  Canvas.Clear;
-  mode := 'shulte';
-  if need_recalc  then
-  begin
-    n:=StrToInt((Form1.Panel1.Controls[0] as TRadioGroup).Items[(Panel1.Controls[0] as TRadioGroup).ItemIndex]);
-    Randomize;
-    c:=n*n;
-    for i:=1 to c do
-      t_sh[i]:=i;
-
-    for i:=1 to c do
-    begin
-      ri:=random(c)+1;
-      sh[i]:=t_sh[ri];
-      for j:=ri to c-1 do
-        t_sh[j]:=t_sh[j+1];
-      c:=c-1;
-    end;
-  end;
-
-  ri:=1;
-  screen_w := Canvas.Width div (n + 2);
-  screen_h := (Canvas.Height - Panel1.Height) div (n + 2);
-  if screen_w > screen_h then
-    step := screen_h
-  else
-    step := screen_w;
-
-  sh_x := (Canvas.Width div 2) - step * (n div 2) - step div 2;
-
-  for i:=1 to n do
-  begin
-    sh_y := ((Canvas.Height - Panel1.Height) div 2) - step * (n div 2) - step div 2;
-    for j:=1 to n do
-      begin
-        drowCell(sh_x, sh_y, sh[ri]);
-        inc(ri);
-        sh_y := sh_y + step;
-		  end;
-      sh_x := sh_x + step;
-	end;
-end;
-
 procedure TForm1.initShulte;
 
 var
@@ -355,6 +306,54 @@ begin
   createShulte(true);
 end;
 
+procedure TForm1.createShulte(need_recalc: boolean);
+var
+  i, j, ri, c,
+    sh_x, sh_y, screen_w, screen_h : integer;
+begin
+  Canvas.Clear;
+  mode := 'shulte';
+  if need_recalc  then
+  begin
+    n:=StrToInt((Form1.Panel1.Controls[0] as TRadioGroup).Items[(Panel1.Controls[0] as TRadioGroup).ItemIndex]);
+    Randomize;
+    c:=n*n;
+    for i:=1 to c do
+      t_sh[i]:=i;
+
+    for i:=1 to c do
+    begin
+      ri:=random(c)+1;
+      sh[i]:=t_sh[ri];
+      for j:=ri to c-1 do
+        t_sh[j]:=t_sh[j+1];
+      c:=c-1;
+    end;
+  end;
+
+  ri:=1;
+  screen_w := Canvas.Width div (n);
+  screen_h := (Canvas.Height - Panel1.Height) div (n);
+  if screen_w > screen_h then
+    step := screen_h
+  else
+    step := screen_w;
+
+  sh_x := (Canvas.Width div 2) - step * (n div 2) - step div 2;
+
+  for i:=1 to n do
+  begin
+    sh_y := ((Canvas.Height - Panel1.Height) div 2) - step * (n div 2) - step div 2;
+    for j:=1 to n do
+      begin
+        drowCell(sh_x, sh_y, sh[ri]);
+        inc(ri);
+        sh_y := sh_y + step;
+		  end;
+      sh_x := sh_x + step;
+	end;
+end;
+
 procedure TForm1.drowCell(x, y, i: integer);
 begin
 
@@ -390,11 +389,6 @@ begin
     end;
   end;
 
-end;
-
-procedure TForm1.initBigSmall;
-begin
-  clearPanel;
 end;
 
 procedure TForm1.initBlackWhite;
@@ -468,8 +462,8 @@ begin
   end;
 
   ri:=1;
-  screen_w := Canvas.Width div (n + 2);
-  screen_h := (Canvas.Height - Panel1.Height) div (n + 2);
+  screen_w := Canvas.Width div (n);
+  screen_h := (Canvas.Height - Panel1.Height) div (n);
   if screen_w > screen_h then
     step := screen_h
   else
@@ -491,6 +485,110 @@ begin
 
 end;
 
+procedure TForm1.initKlin;
+var
+  Radio, Radio2 :TRadioGroup;
+  ButtonSH, ButtonST :TButton;
+  TempStr: TLabeledEdit;
+begin
+  clearPanel;
+
+  with Panel1 do
+  begin
+    Left := 0;
+    Height := 80;
+    Top := 573;
+    Width := 1055;
+    Align := alBottom;
+    BevelInner := bvRaised;
+    Color := clSilver;
+    ParentColor := False;
+    TabOrder := 0;
+	end;
+
+  Radio:=TRadioGroup.Create(Panel1);
+  with Radio do
+  begin
+    Parent:=Panel1;
+    Items.Add('Горизонтальные');
+    Items.Add('Вертикальные');
+    AutoSize:=true;
+    ItemIndex:=1;
+    Columns:=1;
+    Caption:='Режим';
+    Left:=20;
+    Top:=8;
+	end;
+  Radio.OnClick:=@Shuffle;
+
+  Radio2:=TRadioGroup.Create(Panel1);
+  with Radio2 do
+  begin
+    Parent:=Panel1;
+    Items.Add('1');
+    Items.Add('2');
+    Items.Add('3');
+    Items.Add('4');
+    Items.Add('5');
+    Items.Add('6');
+    AutoSize:=true;
+    ItemIndex:=1;
+    Columns:=3;
+    Caption:='Строк';
+    Left:=170;
+    Top:=8;
+	end;
+  Radio.OnClick:=@Shuffle;
+
+  ButtonSH:=Tbutton.Create(Panel1);
+  with ButtonSH do
+  begin
+    Parent:=Panel1;
+    Caption:='Перемешать';
+    left:=300;
+    top:=25;
+    Color := clSilver;
+    ParentColor := False;
+    OnClick:=@Shuffle;
+	end;
+
+  ButtonST:=Tbutton.Create(Panel1);
+  with ButtonST do
+  begin
+    Parent:=Panel1;
+    Caption:='Старт';
+    left:=400;
+    top:=25;
+    Color := clSilver;
+    ParentColor := False;
+    OnClick:=@Form1.TimerClick;
+	end;
+
+  TempStr :=TLabeledEdit.Create(Panel1);
+  with TempStr do
+  begin
+    Parent:=Panel1;
+    Left:=530;
+    top:=25;
+    Width:=30;
+    LabelPosition:=lpLeft;
+    Font.Size:=10;
+    EditLabel.Caption:='Темп  ';
+	end;
+
+  createKlin(true);
+end;
+
+procedure TForm1.createKlin(need_recalc: boolean);
+begin
+
+end;
+
+procedure TForm1.initBigSmall;
+begin
+  clearPanel;
+end;
+
 procedure TForm1.initCountDown;
 begin
   clearPanel;
@@ -505,12 +603,6 @@ procedure TForm1.initElephant;
 begin
   clearPanel;
 end;
-
-procedure TForm1.initKlin;
-begin
-  clearPanel;
-end;
-
 procedure TForm1.initZaya;
 begin
   clearPanel;
